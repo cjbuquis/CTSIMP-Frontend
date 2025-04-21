@@ -95,7 +95,7 @@ const Dashboard = () => {
     }
 
     try {
-      const response = await fetch("http://tourism-backend.test/api/places", {
+      const response = await fetch("http://tourism_backend.test/api/places", {
         method: "POST",
         headers: {
           Accept: "application/json",

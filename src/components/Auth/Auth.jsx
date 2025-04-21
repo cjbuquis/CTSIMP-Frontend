@@ -19,7 +19,7 @@ const Auth = () => {
         }}
       >
         <div className="hero-overlay bg-opacity-65"></div>
-        <div className="hero-content text-neutral-content text-center w-1/3">
+        <div className="hero-content text-black text-center w-1/3">
           {isLogin ? (
             <Login onToggle={toggleAuth} openModal={openModal} />
           ) : (

@@ -102,7 +102,7 @@ const Register = ({ onToggle }) => {
     }
 
     try {
-      const response = await fetch("http://tourism-backend.test/api/register", {
+      const response = await fetch("http://tourism_backend.test/api/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
