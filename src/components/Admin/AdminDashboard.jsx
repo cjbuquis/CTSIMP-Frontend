@@ -68,6 +68,9 @@ const AdminDashboard = () => {
   const PlaceDetailsModal = ({ place, isOpen, onClose }) => {
     if (!isOpen) return null;
 
+    // Debugging log for the image URL
+    console.log("Image URL:", `http://tourism-backend.test/storage/${place.image_link}`);
+
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-start z-50 overflow-y-auto py-10">
         <div className="bg-white p-8 rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto m-4 border border-emerald-200 shadow-xl">
@@ -91,20 +94,6 @@ const AdminDashboard = () => {
           </div>
 
           <div className="space-y-6">
-            <section>
-              <h3 className="font-medium text-lg mb-2 text-emerald-700 flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                  <polyline points="14 2 14 8 20 8"></polyline>
-                  <line x1="16" y1="13" x2="8" y2="13"></line>
-                  <line x1="16" y1="17" x2="8" y2="17"></line>
-                  <polyline points="10 9 9 9 8 9"></polyline>
-                </svg>
-                Description
-              </h3>
-              <p className="text-gray-700 bg-emerald-50 p-4 rounded-md">{place.description}</p>
-            </section>
-
             <section>
               <h3 className="font-medium text-lg mb-2 text-emerald-700 flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
