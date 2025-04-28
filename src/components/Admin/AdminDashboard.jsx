@@ -46,15 +46,15 @@ const AdminDashboard = () => {
       if (!response.ok) {
         throw new Error("Failed to update status.");
       }
-      
+
       // Refresh data instead of reloading the page
       if (status === "Approved") {
-        setPendingPlaces(pendingPlaces.filter(place => place.id !== id));
+        setPendingPlaces(pendingPlaces.filter((place) => place.id !== id));
         fetch("http://tourism-backend.test/api/approvedplaces")
           .then((response) => response.json())
           .then((data) => setApprovedPlaces(data));
       } else {
-        setPendingPlaces(pendingPlaces.filter(place => place.id !== id));
+        setPendingPlaces(pendingPlaces.filter((place) => place.id !== id));
       }
     } catch (error) {
       console.error("Error updating status:", error);
@@ -73,15 +73,14 @@ const AdminDashboard = () => {
         <div className="bg-white p-8 rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto m-4 border border-emerald-200 shadow-xl">
           <div className="flex justify-between items-center mb-6 border-b border-emerald-100 pb-4">
             <div className="flex items-center">
-              {/* Location Icon */}
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-emerald-600 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                 <circle cx="12" cy="10" r="3"></circle>
               </svg>
               <h2 className="text-2xl font-semibold text-emerald-800">{place.place_name}</h2>
             </div>
-            <button 
-              onClick={onClose} 
+            <button
+              onClick={onClose}
               className="rounded-full h-8 w-8 flex items-center justify-center text-gray-500 hover:bg-gray-100 transition-colors"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -90,7 +89,7 @@ const AdminDashboard = () => {
               </svg>
             </button>
           </div>
-          
+
           <div className="space-y-6">
             <section>
               <h3 className="font-medium text-lg mb-2 text-emerald-700 flex items-center">
@@ -157,25 +156,24 @@ const AdminDashboard = () => {
                     src={place.virtual_iframe}
                     title="Virtual Tour"
                     className="w-full h-64"
-                    allow="xr-spatial-tracking; vr; gyroscope; accelerometer; fullscreen; autoplay; xr"
+                    allow="gyroscope; accelerometer; fullscreen; autoplay"
                     scrolling="no"
                     allowFullScreen={true}
                     frameBorder="0"
-                    allowVR="yes"
                   />
                 </div>
               </section>
             </div>
           </div>
-          
+
           <div className="flex justify-end gap-4 mt-8 pt-4 border-t border-emerald-100">
-            <button 
+            <button
               className="px-4 py-2 bg-white border border-emerald-300 text-emerald-700 rounded-md hover:bg-emerald-50 transition-colors"
               onClick={onClose}
             >
               Close
             </button>
-            <button 
+            <button
               className="px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 transition-colors"
               onClick={() => {
                 updatePlaceStatus(place.id, "Approved");
@@ -184,7 +182,7 @@ const AdminDashboard = () => {
             >
               Approve
             </button>
-            <button 
+            <button
               className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
               onClick={() => {
                 updatePlaceStatus(place.id, "Rejected");
