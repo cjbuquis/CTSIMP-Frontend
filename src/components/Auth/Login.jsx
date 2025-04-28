@@ -90,7 +90,7 @@ const Login = ({ onToggle }) => {
     }
 
     try {
-      const response = await fetch("http://tourism_backend.test/api/login", {
+      const response = await fetch("http://tourism-backend.test/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
