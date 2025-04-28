@@ -11,13 +11,13 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     // Fetch pending places
-    fetch("http://tourism-backend.test/api/pending")
+    fetch("http://ctsimp-backend.test/api/pending")
       .then((response) => response.json())
       .then((data) => setPendingPlaces(data))
       .catch((error) => console.error("Error fetching pending places:", error));
 
     // Fetch approved places
-    fetch("http://tourism-backend.test/api/approvedplaces")
+    fetch("http://ctsimp-backend.test/api/approvedplaces")
       .then((response) => response.json())
       .then((data) => setApprovedPlaces(data))
       .catch((error) => console.error("Error fetching approved places:", error));
@@ -35,7 +35,7 @@ const AdminDashboard = () => {
 
   const updatePlaceStatus = async (id, status) => {
     try {
-      const response = await fetch(`http://tourism-backend.test/api/places/${id}/status`, {
+      const response = await fetch(`http://ctsimp-backend.test/api/places/${id}/status`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -50,7 +50,7 @@ const AdminDashboard = () => {
       // Refresh data instead of reloading the page
       if (status === "Approved") {
         setPendingPlaces(pendingPlaces.filter(place => place.id !== id));
-        fetch("http://tourism-backend.test/api/approvedplaces")
+        fetch("http://ctsimp-backend.test/api/approvedplaces")
           .then((response) => response.json())
           .then((data) => setApprovedPlaces(data));
       } else {
@@ -117,7 +117,7 @@ const AdminDashboard = () => {
               </h3>
               <div className="border border-emerald-200 rounded-lg overflow-hidden shadow-md">
                 <img
-                  src={`http://tourism-backend.test/storage/${place.image_link}`}
+                  src={`http://ctsimp-backend.test/storage/${place.image_link}`}
                   alt={place.name}
                   className="w-full h-auto"
                 />
@@ -222,7 +222,7 @@ const AdminDashboard = () => {
 
       try {
         setLoading(true);
-        const response = await fetch("http://tourism-backend.test/api/change-password", {
+        const response = await fetch("http://ctsimp-backend.test/api/change-password", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
