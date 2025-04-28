@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 
 export default function Carousel() {
+  const [showDetailsModal, setShowDetailsModal] = useState(false)
   const navigate = useNavigate()
   const [currentImageId, setCurrentImageId] = useState(null)
   const [translateX, setTranslateX] = useState(0)
@@ -71,6 +72,10 @@ export default function Carousel() {
             description: place.description,
             virtual_iframe: place.virtual_iframe,
             map_iframe: place.map_iframe,
+            entrance: place.entrance, 
+            room_or_cottages_price: place.room_or_cottages_price, 
+            history: place.history, 
+            activities: place.activities
           })),
         )
         // Simulate loading for animation effect
@@ -320,6 +325,26 @@ export default function Carousel() {
                 </svg>
                 Virtual Tour
               </button>
+              <button
+      onClick={() => setShowDetailsModal(true)}
+      className="rounded-full px-5 py-2.5 text-sm font-medium transition-all duration-300 flex items-center shadow-md hover:shadow-lg hover:-translate-y-0.5 bg-white/90 text-emerald-900 hover:bg-white"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-4 w-4 mr-2"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="16" x2="12" y2="12"></line>
+        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+      </svg>
+      More Details
+    </button>
             </div>
 
             {/* Dropdown content with animation */}
@@ -449,6 +474,84 @@ export default function Carousel() {
               </div>
             )}
           </div>
+          {showDetailsModal && (
+    <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center animate-[fadeIn_0.3s_ease-out]">
+      <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full mx-4 p-6 animate-[scaleIn_0.3s_ease-out]">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold text-emerald-800">Destination Details</h2>
+          <button
+            onClick={() => setShowDetailsModal(false)}
+            className="text-gray-500 hover:text-emerald-700 transition-colors"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div className="space-y-4">
+          <div className="bg-emerald-50 p-4 rounded-lg">
+            <div className="flex items-center mb-2">
+              <svg className="w-5 h-5 mr-2 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              <h3 className="font-semibold text-emerald-800">Entrance Fee</h3>
+            </div>
+            <p className="text-gray-700">{currentImage?.entrance || "No entrance fee information available"}</p>
+          </div>
+
+          <div className="bg-emerald-50 p-4 rounded-lg">
+            <div className="flex items-center mb-2">
+              <svg className="w-5 h-5 mr-2 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
+              <h3 className="font-semibold text-emerald-800">Accommodation Prices</h3>
+            </div>
+            <p className="text-gray-700">{currentImage?.room_or_cottages_price || "No accommodation information available"}</p>
+          </div>
+
+          <div className="bg-emerald-50 p-4 rounded-lg">
+            <div className="flex items-center mb-2">
+              <svg className="w-5 h-5 mr-2 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <h3 className="font-semibold text-emerald-800">History</h3>
+            </div>
+            <p className="text-gray-700 whitespace-pre-line">{currentImage?.history || "No historical information available"}</p>
+          </div>
+          <div className="bg-emerald-50 p-4 rounded-lg">
+            <div className="flex items-center mb-2">
+            <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-5 w-5 text-emerald-500"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M16 8l-8 8M8 8l8 8"/>
+      </svg>
+              <h3 className="font-semibold text-emerald-800">Activities</h3>
+            </div>
+            <p className="text-gray-700 whitespace-pre-line">{currentImage?.activities || "No Activities information available"}</p>
+          </div>
+        </div>
+
+        <div className="mt-6 flex justify-end">
+          <button
+            onClick={() => setShowDetailsModal(false)}
+            className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  )}
+
         </div>
 
         {/* Carousel navigation with animations */}
@@ -605,6 +708,11 @@ export default function Carousel() {
           to { transform: translateY(0); opacity: 1; }
         }
         
+          @keyframes scaleIn {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
         @keyframes pulseGradient {
           0% { opacity: 0.7; }
           50% { opacity: 0.3; }

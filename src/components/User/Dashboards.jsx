@@ -716,7 +716,12 @@ const Dashboard = () => {
         </motion.form>
       </motion.div>
 
-      <AnimatePresence>{isModalOpen && <Modal onClose={() => setIsModalOpen(false)} />}</AnimatePresence>
+      <AnimatePresence>{isModalOpen && (
+    <Modal 
+      onClose={() => setIsModalOpen(false)} 
+      currentUser={formData.name} // Add this line
+    />
+  )}</AnimatePresence>
 
       {/* Notification Snackbar */}
       <AnimatePresence>
