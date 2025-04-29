@@ -18,7 +18,7 @@ export default function Carousel() {
 
   const currentImage = images && images.length > 0 ? images.find((img) => img.id === currentImageId) : null
 
-  const imageSrc = currentImage?.src ? `http://tourism-backend.test/storage/${currentImage.src}` : ""
+  const imageSrc = currentImage?.src ? `http://ctsimp-backend.test/storage/${currentImage.src}` : ""
 
   const handleNavigation = (direction) => {
     const currentIndex = images.findIndex((img) => img.id === currentImageId)
@@ -57,7 +57,7 @@ export default function Carousel() {
   }
 
   useEffect(() => {
-    fetch("http://tourism-backend.test/api/approvedplaces")
+    fetch("http://ctsimp-backend.test/api/approvedplaces")
       .then((response) => response.json())
       .then((data) => {
         setImages(
@@ -482,7 +482,7 @@ export default function Carousel() {
                   }}
                 >
                   <img
-                    src={`http://tourism-backend.test/storage/${image.src}`}
+                    src={`http://ctsimp-backend.test/storage/${image.src}`}
                     alt={image.alt}
                     className={`object-cover w-full h-full transition-transform duration-700 ${
                       image.id === currentImageId ? "scale-110" : "scale-100 hover:scale-110"
