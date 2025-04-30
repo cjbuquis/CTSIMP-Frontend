@@ -82,12 +82,32 @@ const XIcon = (props) => (
   </svg>
 )
 
-const SubmissionsModal = ({ isOpen, onClose }) => {
+const EditIcon = (props) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+  </svg>
+)
+
+const SubmissionsModal = ({ isOpen, onClose, onEdit }) => {
   const [submissions, setSubmissions] = useState([])
   const [loading, setLoading] = useState(true)
   const [currentUser, setCurrentUser] = useState("")
 
   useEffect(() => {
+    if (!isOpen) return
+
     // Get current user from local storage
     try {
       const userData = localStorage.getItem("user")
@@ -99,27 +119,53 @@ const SubmissionsModal = ({ isOpen, onClose }) => {
       console.error("Error parsing user data:", error)
     }
 
-    // This would typically be fetched from an API
-    // For now, we'll simulate loading and then set mock data
+    // In a real app, you would fetch this from your API
+    // For now, we'll use mock data that includes the current user's submissions
     setLoading(true)
 
     // Simulate API call
     setTimeout(() => {
       // Mock data - in a real app, you would fetch this from your API
+      // This mock data assumes the current user has submissions
       const mockSubmissions = [
-        { id: 1, place_name: "Tinuy-an Falls", status: "Approved", date: "2023-05-15", user: "John Doe" },
-        { id: 2, place_name: "Enchanted River", status: "Pending", date: "2023-06-20", user: "John Doe" },
-        { id: 3, place_name: "Britania Islands", status: "Rejected", date: "2023-07-10", user: "Jane Smith" },
-        { id: 4, place_name: "Laswitan Lagoon", status: "Approved", date: "2023-08-05", user: "John Doe" },
+        {
+          id: 1,
+          place_name: "Tinuy-an Falls",
+          status: "Approved",
+          date: "2023-05-15",
+          user: currentUser || "Current User",
+          address: "Bislig, Surigao Del Sur",
+          description: "Beautiful three-tiered waterfall known as the 'Niagara Falls of the Philippines'",
+        },
+        {
+          id: 2,
+          place_name: "Enchanted River",
+          status: "Pending",
+          date: "2023-06-20",
+          user: currentUser || "Current User",
+          address: "Hinatuan, Surigao Del Sur",
+          description: "A deep blue river with mysterious depths and crystal clear waters",
+        },
+        {
+          id: 3,
+          place_name: "Britania Islands",
+          status: "Rejected",
+          date: "2023-07-10",
+          user: currentUser || "Current User",
+          address: "San Agustin, Surigao Del Sur",
+          description: "A group of 24 islets with white sand beaches and crystal clear waters",
+        },
       ]
 
       setSubmissions(mockSubmissions)
       setLoading(false)
     }, 1000)
-  }, [])
+  }, [isOpen, currentUser])
 
-  // Filter submissions to only show the current user's
-  const userSubmissions = submissions.filter((submission) => submission.user === currentUser)
+  const handleEdit = (submission) => {
+    onClose()
+    onEdit(submission)
+  }
 
   return (
     <AnimatePresence>
@@ -151,71 +197,59 @@ const SubmissionsModal = ({ isOpen, onClose }) => {
                 <div className="flex justify-center items-center py-12">
                   <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-500"></div>
                 </div>
-              ) : userSubmissions.length > 0 ? (
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              ) : submissions.length > 0 ? (
+                <div className="space-y-4">
+                  {submissions.map((submission) => (
+                    <div
+                      key={submission.id}
+                      className="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                    >
+                      <div className="flex justify-between items-center p-4 border-b bg-gray-50">
+                        <div>
+                          <h3 className="font-medium text-lg text-gray-900">{submission.place_name}</h3>
+                          <p className="text-sm text-gray-600">{submission.address}</p>
+                        </div>
+                        <span
+                          className={`px-3 py-1 text-xs font-semibold rounded-full ${
+                            submission.status === "Approved"
+                              ? "bg-green-100 text-green-800"
+                              : submission.status === "Pending"
+                                ? "bg-yellow-100 text-yellow-800"
+                                : "bg-red-100 text-red-800"
+                          }`}
                         >
-                          Destination
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        >
-                          Status
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        >
-                          Submitted On
-                        </th>
-                        <th
-                          scope="col"
-                          className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        >
-                          Actions
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {userSubmissions.map((submission) => (
-                        <tr key={submission.id} className="hover:bg-gray-50">
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm font-medium text-gray-900">{submission.place_name}</div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span
-                              className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                                submission.status === "Approved"
-                                  ? "bg-green-100 text-green-800"
-                                  : submission.status === "Pending"
-                                    ? "bg-yellow-100 text-yellow-800"
-                                    : "bg-red-100 text-red-800"
-                              }`}
+                          {submission.status}
+                        </span>
+                      </div>
+                      <div className="p-4">
+                        <p className="text-sm text-gray-700 mb-3">{submission.description}</p>
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs text-gray-500">Submitted on {submission.date}</span>
+                          <div className="space-x-2">
+                            <button
+                              className="px-3 py-1 text-xs bg-emerald-100 text-emerald-700 rounded hover:bg-emerald-200 transition-colors"
+                              onClick={() => window.open(`/destination/${submission.id}`, "_blank")}
                             >
-                              {submission.status}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{submission.date}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <a href="#" className="text-emerald-600 hover:text-emerald-900 mr-3">
                               View
-                            </a>
-                            {submission.status === "Pending" && (
-                              <a href="#" className="text-red-600 hover:text-red-900">
-                                Cancel
-                              </a>
+                            </button>
+                            {submission.status !== "Approved" && (
+                              <button
+                                className="px-3 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition-colors flex items-center"
+                                onClick={() => handleEdit(submission)}
+                              >
+                                <EditIcon className="h-3 w-3 mr-1" /> Edit
+                              </button>
                             )}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                            {submission.status === "Pending" && (
+                              <button className="px-3 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200 transition-colors">
+                                Cancel
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               ) : (
                 <div className="text-center py-12 bg-gray-50 rounded-lg">
@@ -260,7 +294,7 @@ const SubmissionsModal = ({ isOpen, onClose }) => {
   )
 }
 
-const Header = ({ onOpenModal }) => {
+const Header = ({ onOpenModal, onEditSubmission }) => {
   const [isSubmissionsModalOpen, setIsSubmissionsModalOpen] = useState(false)
   const [submissions, setSubmissions] = useState([])
   const [currentUser, setCurrentUser] = useState("")
@@ -277,21 +311,34 @@ const Header = ({ onOpenModal }) => {
       console.error("Error parsing user data:", error)
     }
 
-    // This would typically be fetched from an API
-    // For now, we'll simulate loading and then set mock data
-    // Simulate API call
-    setTimeout(() => {
-      // Mock data - in a real app, you would fetch this from your API
-      const mockSubmissions = [
-        { id: 1, place_name: "Tinuy-an Falls", status: "Approved", date: "2023-05-15", user: "John Doe" },
-        { id: 2, place_name: "Enchanted River", status: "Pending", date: "2023-06-20", user: "John Doe" },
-        { id: 3, place_name: "Britania Islands", status: "Rejected", date: "2023-07-10", user: "Jane Smith" },
-        { id: 4, place_name: "Laswitan Lagoon", status: "Approved", date: "2023-08-05", user: "John Doe" },
-      ]
+    // This would typically be fetched from your API
+    // For now, we'll use mock data
+    const mockSubmissions = [
+      {
+        id: 1,
+        place_name: "Tinuy-an Falls",
+        status: "Approved",
+        date: "2023-05-15",
+        user: currentUser || "Current User",
+      },
+      {
+        id: 2,
+        place_name: "Enchanted River",
+        status: "Pending",
+        date: "2023-06-20",
+        user: currentUser || "Current User",
+      },
+      {
+        id: 3,
+        place_name: "Britania Islands",
+        status: "Rejected",
+        date: "2023-07-10",
+        user: currentUser || "Current User",
+      },
+    ]
 
-      setSubmissions(mockSubmissions)
-    }, 1000)
-  }, [])
+    setSubmissions(mockSubmissions)
+  }, [currentUser])
 
   const handleLogout = () => {
     // Clear session storage
@@ -300,6 +347,11 @@ const Header = ({ onOpenModal }) => {
     localStorage.clear()
     // Redirect to Home page
     window.location.href = "src/components/Auth/Home.jsx"
+  }
+
+  const handleOpenSubmissions = (e) => {
+    e.preventDefault() // Prevent form submission
+    setIsSubmissionsModalOpen(true)
   }
 
   return (
@@ -326,22 +378,24 @@ const Header = ({ onOpenModal }) => {
           transition={{ delay: 0.4, duration: 0.5 }}
         >
           <motion.button
-            onClick={() => setIsSubmissionsModalOpen(true)}
+            onClick={handleOpenSubmissions}
+            type="button" // Explicitly set button type to prevent form submission
             className="flex items-center text-emerald-600 hover:text-emerald-800 transition-colors duration-300 relative"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
             <ListIcon className="h-5 w-5 mr-1" />
             <span className="text-sm">My Submissions</span>
-            {submissions.filter((s) => s.user === currentUser).length > 0 && (
+            {submissions.length > 0 && (
               <span className="absolute -top-2 -right-2 bg-emerald-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                {submissions.filter((s) => s.user === currentUser).length}
+                {submissions.length}
               </span>
             )}
           </motion.button>
 
           <motion.button
             onClick={onOpenModal}
+            type="button" // Explicitly set button type to prevent form submission
             className="flex items-center text-emerald-600 hover:text-emerald-800 transition-colors duration-300"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -352,6 +406,7 @@ const Header = ({ onOpenModal }) => {
 
           <motion.button
             onClick={handleLogout}
+            type="button" // Explicitly set button type to prevent form submission
             className="flex items-center text-red-600 hover:text-red-800 transition-colors duration-300"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -362,7 +417,11 @@ const Header = ({ onOpenModal }) => {
         </motion.div>
       </motion.div>
 
-      <SubmissionsModal isOpen={isSubmissionsModalOpen} onClose={() => setIsSubmissionsModalOpen(false)} />
+      <SubmissionsModal
+        isOpen={isSubmissionsModalOpen}
+        onClose={() => setIsSubmissionsModalOpen(false)}
+        onEdit={onEditSubmission}
+      />
     </>
   )
 }

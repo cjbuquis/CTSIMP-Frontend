@@ -184,7 +184,7 @@ const Dashboard = () => {
     color: "",
   })
   const [formData, setFormData] = useState({
-    name: "", // This will be populated from sessionStorage
+    name: "", // This will be populated from localStorage
     place_name: "",
     address: "",
     email_address: "",
@@ -201,10 +201,13 @@ const Dashboard = () => {
     services: "", // Add new services field
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [errors, setErrors] = useState({})
+  const [isEditing, setIsEditing] = useState(false)
+  const [editingId, setEditingId] = useState(null)
 
   const fileInputRef = useRef(null)
 
-  // Set the name field from sessionStorage when the component mounts
+  // Set the name field from localStorage when the component mounts
   useEffect(() => {
     try {
       const userData = localStorage.getItem("user")
@@ -247,6 +250,14 @@ const Dashboard = () => {
       ...prevData,
       [name]: value,
     }))
+
+    // Clear error for this field when user starts typing
+    if (errors[name]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: "",
+      }))
+    }
   }
 
   const showNotification = (text, color) => {
@@ -262,8 +273,40 @@ const Dashboard = () => {
     }, 5000)
   }
 
+  const validateForm = () => {
+    const newErrors = {}
+
+    // Required fields
+    if (!formData.place_name) newErrors.place_name = "Place name is required"
+    if (!formData.address) newErrors.address = "Address is required"
+    if (!formData.email_address) newErrors.email_address = "Email address is required"
+    if (!formData.contact_no) newErrors.contact_no = "Contact number is required"
+    if (!formData.description) newErrors.description = "Description is required"
+    if (!previewUrl && !isEditing) newErrors.image_link = "Image is required"
+
+    // Email validation
+    if (formData.email_address && !/\S+@\S+\.\S+/.test(formData.email_address)) {
+      newErrors.email_address = "Please enter a valid email address"
+    }
+
+    // Phone validation (simple check for now)
+    if (formData.contact_no && !/^\d{10,11}$/.test(formData.contact_no.replace(/\D/g, ""))) {
+      newErrors.contact_no = "Please enter a valid phone number"
+    }
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
+
+    // Validate form
+    if (!validateForm()) {
+      showNotification("Please fill in all required fields correctly", "error")
+      return
+    }
+
     setIsSubmitting(true)
 
     const formDataToSubmit = new FormData()
@@ -276,8 +319,14 @@ const Dashboard = () => {
     }
 
     try {
-      const response = await fetch("http://tourism-backend.test/api/places", {
-        method: "POST",
+      const endpoint = isEditing
+        ? `http://tourism-backend.test/api/places/${editingId}`
+        : "http://tourism-backend.test/api/places"
+
+      const method = isEditing ? "PUT" : "POST"
+
+      const response = await fetch(endpoint, {
+        method: method,
         headers: {
           Accept: "application/json",
         },
@@ -286,8 +335,17 @@ const Dashboard = () => {
 
       const data = await response.json()
       if (response.ok) {
-        console.log("Place created:", data.place)
-        showNotification("Place created successfully", "success")
+        console.log("Place " + (isEditing ? "updated" : "created") + ":", data.place)
+        showNotification(`Place ${isEditing ? "updated" : "created"} successfully`, "success")
+
+        // Reset form if creating new place
+        if (!isEditing) {
+          resetForm()
+        }
+
+        // Reset editing state
+        setIsEditing(false)
+        setEditingId(null)
 
         // Delay the page refresh to allow time to see the notification
         setTimeout(() => {
@@ -295,7 +353,7 @@ const Dashboard = () => {
         }, 3000) // 3 second delay
       } else {
         console.error("Error:", data.message)
-        showNotification(data.message || "Error creating place", "error")
+        showNotification(data.message || `Error ${isEditing ? "updating" : "creating"} place`, "error")
       }
     } catch (error) {
       console.error("Error:", error)
@@ -303,6 +361,49 @@ const Dashboard = () => {
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  const resetForm = () => {
+    setFormData({
+      name: formData.name, // Keep the user name
+      place_name: "",
+      address: "",
+      email_address: "",
+      contact_no: "",
+      description: "",
+      virtual_iframe: "",
+      map_iframe: "",
+      image_link: null,
+      status: "Pending",
+      entrance: "",
+      room_or_cottages_price: "",
+      history: "",
+      activities: "",
+      services: "",
+    })
+    setPreviewUrl(null)
+    setErrors({})
+  }
+
+  const handleEditSubmission = (submission) => {
+    // Set form data with submission data
+    setFormData({
+      ...formData,
+      place_name: submission.place_name,
+      address: submission.address,
+      description: submission.description,
+      // Other fields would be populated here in a real app
+    })
+
+    // Set editing state
+    setIsEditing(true)
+    setEditingId(submission.id)
+
+    // Show notification
+    showNotification(`Editing ${submission.place_name}. Make your changes and submit.`, "success")
+
+    // Scroll to top of form
+    window.scrollTo({ top: 0, behavior: "smooth" })
   }
 
   // Animation variants
@@ -373,13 +474,46 @@ const Dashboard = () => {
                 transition={{ duration: 0.5, delay: 0.6 }}
               >
                 <h1 className="text-2xl font-bold text-white">Caraga Tourism</h1>
-                <p className="text-emerald-100 text-sm">Submit a New Destination</p>
+                <p className="text-emerald-100 text-sm">
+                  {isEditing ? "Edit Destination" : "Submit a New Destination"}
+                </p>
               </motion.div>
             </div>
           </motion.div>
 
           <div className="p-6">
-            <Header onOpenModal={() => setIsModalOpen(true)} />
+            <Header onOpenModal={() => setIsModalOpen(true)} onEditSubmission={handleEditSubmission} />
+
+            {isEditing && (
+              <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-md">
+                <div className="flex items-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5 text-blue-500 mr-2"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                  </svg>
+                  <span className="font-medium text-blue-700">
+                    You are editing an existing submission. Make your changes and click "Update Destination".
+                  </span>
+                </div>
+                <div className="mt-2 flex space-x-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsEditing(false)
+                      setEditingId(null)
+                      resetForm()
+                    }}
+                    className="px-3 py-1 text-sm bg-white border border-blue-300 text-blue-700 rounded hover:bg-blue-50"
+                  >
+                    Cancel Editing
+                  </button>
+                </div>
+              </div>
+            )}
 
             <motion.div
               className="grid grid-cols-1 lg:grid-cols-3 gap-8"
@@ -392,7 +526,7 @@ const Dashboard = () => {
                   {/* Place Name */}
                   <motion.div variants={itemVariants}>
                     <label htmlFor="place_name" className="block text-sm font-medium text-emerald-700 mb-1">
-                      Place Name
+                      Place Name <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -405,15 +539,18 @@ const Dashboard = () => {
                         value={formData.place_name}
                         onChange={handleChange}
                         name="place_name"
-                        className="pl-10 w-full px-4 py-2 border border-emerald-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300"
+                        className={`pl-10 w-full px-4 py-2 border ${
+                          errors.place_name ? "border-red-300 bg-red-50" : "border-emerald-300"
+                        } rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300`}
                       />
                     </div>
+                    {errors.place_name && <p className="mt-1 text-sm text-red-600">{errors.place_name}</p>}
                   </motion.div>
 
                   {/* Address */}
                   <motion.div variants={itemVariants}>
                     <label htmlFor="address" className="block text-sm font-medium text-emerald-700 mb-1">
-                      Address
+                      Address <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -426,15 +563,18 @@ const Dashboard = () => {
                         value={formData.address}
                         onChange={handleChange}
                         name="address"
-                        className="pl-10 w-full px-4 py-2 border border-emerald-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300"
+                        className={`pl-10 w-full px-4 py-2 border ${
+                          errors.address ? "border-red-300 bg-red-50" : "border-emerald-300"
+                        } rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300`}
                       />
                     </div>
+                    {errors.address && <p className="mt-1 text-sm text-red-600">{errors.address}</p>}
                   </motion.div>
 
                   {/* Email Address */}
                   <motion.div variants={itemVariants}>
                     <label htmlFor="email" className="block text-sm font-medium text-emerald-700 mb-1">
-                      Email Address
+                      Email Address <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -447,15 +587,18 @@ const Dashboard = () => {
                         value={formData.email_address}
                         onChange={handleChange}
                         name="email_address"
-                        className="pl-10 w-full px-4 py-2 border border-emerald-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300"
+                        className={`pl-10 w-full px-4 py-2 border ${
+                          errors.email_address ? "border-red-300 bg-red-50" : "border-emerald-300"
+                        } rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300`}
                       />
                     </div>
+                    {errors.email_address && <p className="mt-1 text-sm text-red-600">{errors.email_address}</p>}
                   </motion.div>
 
                   {/* Contact No */}
                   <motion.div variants={itemVariants}>
                     <label htmlFor="contact" className="block text-sm font-medium text-emerald-700 mb-1">
-                      Contact No.
+                      Contact No. <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -468,16 +611,19 @@ const Dashboard = () => {
                         value={formData.contact_no}
                         onChange={handleChange}
                         name="contact_no"
-                        className="pl-10 w-full px-4 py-2 border border-emerald-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300"
+                        className={`pl-10 w-full px-4 py-2 border ${
+                          errors.contact_no ? "border-red-300 bg-red-50" : "border-emerald-300"
+                        } rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300`}
                       />
                     </div>
+                    {errors.contact_no && <p className="mt-1 text-sm text-red-600">{errors.contact_no}</p>}
                   </motion.div>
                 </motion.div>
 
                 {/* Description */}
                 <motion.div variants={itemVariants}>
                   <label htmlFor="description" className="block text-sm font-medium text-emerald-700 mb-1">
-                    Description
+                    Description <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
                     <div className="absolute top-3 left-3 flex items-start pointer-events-none">
@@ -489,9 +635,12 @@ const Dashboard = () => {
                       value={formData.description}
                       onChange={handleChange}
                       name="description"
-                      className="pl-10 w-full px-4 py-2 border border-emerald-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent min-h-[120px] transition-all duration-300"
+                      className={`pl-10 w-full px-4 py-2 border ${
+                        errors.description ? "border-red-300 bg-red-50" : "border-emerald-300"
+                      } rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent min-h-[120px] transition-all duration-300`}
                     />
                   </div>
+                  {errors.description && <p className="mt-1 text-sm text-red-600">{errors.description}</p>}
                 </motion.div>
 
                 {/* Entrance Fee */}
@@ -716,6 +865,7 @@ const Dashboard = () => {
               {/* Image Preview */}
               <motion.div className="lg:col-span-1" variants={itemVariants}>
                 <FilePreview previewUrl={previewUrl} onFileChange={handleFileChange} fileInputRef={fileInputRef} />
+                {errors.image_link && <p className="mt-1 text-sm text-red-600">{errors.image_link}</p>}
               </motion.div>
             </motion.div>
 
@@ -764,7 +914,7 @@ const Dashboard = () => {
                       <polyline points="17 21 17 13 7 13 7 21"></polyline>
                       <polyline points="7 3 7 8 15 8"></polyline>
                     </svg>
-                    Submit Destination
+                    {isEditing ? "Update Destination" : "Submit Destination"}
                   </>
                 )}
               </motion.button>
