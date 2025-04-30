@@ -10,6 +10,7 @@ const Register = ({ onToggle }) => {
     email: "",
     password: "",
     confirmPassword: "",
+    status: "Pending",
   })
   const [showPassword, setShowPassword] = useState(false)
   const [errors, setErrors] = useState({})
@@ -99,10 +100,11 @@ const Register = ({ onToggle }) => {
       name: formData.fullName,
       email: formData.email,
       password: formData.password,
+      status: formData.status,
     }
 
     try {
-      const response = await fetch("http://tourism-backend.test/api/register", {
+      const response = await fetch("http://ctsimp-backend.test/api/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

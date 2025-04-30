@@ -25,6 +25,10 @@ const Dashboard = () => {
     map_iframe: "",
     image_link: null,
     status: "Pending",
+    entrance: "",
+    room_or_cottages_price: "",
+    history: "",
+    activities: "",
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -95,7 +99,7 @@ const Dashboard = () => {
     }
 
     try {
-      const response = await fetch("http://tourism-backend.test/api/places", {
+      const response = await fetch("http://ctsimp-backend.test/api/places", {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -385,6 +389,177 @@ const Dashboard = () => {
 
                 {/* Google Map iframe */}
                 <motion.div variants={itemVariants}>
+                  <label htmlFor="googleMap" className="block text-sm font-medium text-emerald-700 mb-1">
+                    Google Map iframe
+                    <span className="ml-5">
+                      <a
+                        href="https://youtube.com/watch?v=T5FaFLeERLs&si=3rAhKhMruFZitpAb"
+                        className="text-emerald-600 hover:text-emerald-700 underline transition-colors duration-300"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        (For Tutorial, click here)
+                      </a>
+                    </span>
+                  </label>
+                  <div className="relative">
+                    <div className="absolute top-3 left-3 flex items-start pointer-events-none">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5 text-emerald-500"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
+                        <line x1="8" y1="2" x2="8" y2="18"></line>
+                        <line x1="16" y1="6" x2="16" y2="22"></line>
+                      </svg>
+                    </div>
+                    <textarea
+                      id="googleMap"
+                      placeholder="e.g, (https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d126440.1668895862!2d123.76526621796874!3d7.972554395731812!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sph!4v1732520001105!5m2!1sen!2sph)"
+                      value={formData.map_iframe || ""}
+                      onChange={handleChange}
+                      name="map_iframe"
+                      className="pl-10 w-full px-4 py-2 border border-emerald-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent min-h-[100px] transition-all duration-300"
+                      rows={4}
+                    />
+                  </div>
+                </motion.div>
+
+{/* History */}
+<motion.div variants={itemVariants}>
+  <label htmlFor="entrance" className="block text-sm font-medium text-emerald-700 mb-1">
+    Entrance Fee
+  </label>
+  <div className="relative">
+    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-5 w-5 text-emerald-500"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+      </svg>
+    </div>
+    <input
+      id="entrance"
+      type="text"
+      placeholder="e.g, ₱50 per person"
+      value={formData.entrance || ""}
+      onChange={handleChange}
+      name="entrance"
+      className="pl-10 w-full px-4 py-2 border border-emerald-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300"
+    />
+  </div>
+</motion.div>
+
+{/* Room/Cottages Price*/}
+<motion.div variants={itemVariants}>
+  <label htmlFor="roomPrice" className="block text-sm font-medium text-emerald-700 mb-1">
+    Room/Cottages Price
+  </label>
+  <div className="relative">
+    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-5 w-5 text-emerald-500"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+      </svg>
+    </div>
+    <input
+      id="roomPrice"
+      type="text"
+      placeholder="e.g, ₱1500 per night"
+      value={formData.room_or_cottages_price || ""}
+      onChange={handleChange}
+      name="room_or_cottages_price"
+      className="pl-10 w-full px-4 py-2 border border-emerald-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300"
+    />
+  </div>
+</motion.div>
+
+{/* Activities */}
+<motion.div variants={itemVariants}>
+  <label htmlFor="history" className="block text-sm font-medium text-emerald-700 mb-1">
+    History
+  </label>
+  <div className="relative">
+    <div className="absolute top-3 left-3 flex items-start pointer-events-none">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-5 w-5 text-emerald-500"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
+    </div>
+    <textarea
+      id="history"
+      placeholder="Historical background..."
+      value={formData.history || ""}
+      onChange={handleChange}
+      name="history"
+      className="pl-10 w-full px-4 py-2 border border-emerald-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent min-h-[120px] transition-all duration-300"
+    />
+  </div>
+</motion.div>        
+
+{/* Activities */}
+<motion.div variants={itemVariants}>
+  <label htmlFor="activities" className="block text-sm font-medium text-emerald-700 mb-1">
+    Activities
+  </label>
+  <div className="relative">
+    <div className="absolute top-3 left-3 flex items-start pointer-events-none">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-5 w-5 text-emerald-500"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M16 8l-8 8M8 8l8 8"/>
+      </svg>
+    </div>
+    <textarea
+      id="activities"
+      placeholder="Available activities..."
+      value={formData.activities || ""}
+      onChange={handleChange}
+      name="activities"
+      className="pl-10 w-full px-4 py-2 border border-emerald-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent min-h-[120px] transition-all duration-300"
+    />
+  </div>
+</motion.div>
+
+{/* Google Map iframe */}
+<motion.div variants={itemVariants}>
                   <label htmlFor="googleMap" className="block text-sm font-medium text-emerald-700 mb-1">
                     Google Map iframe
                     <span className="ml-5">

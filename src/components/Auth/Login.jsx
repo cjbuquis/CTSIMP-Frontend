@@ -66,7 +66,6 @@ const Login = ({ onToggle }) => {
       ...formData,
       [name]: type === "checkbox" ? checked : value,
     })
-    // Clear error when user types
     if (error) setError("")
   }
 
@@ -76,9 +75,9 @@ const Login = ({ onToggle }) => {
     setError("")
     setLoginSuccess(false)
 
-    // Handle remember me functionality using cookies
+    // Handle remember me functionality
     if (formData.rememberMe) {
-      setCookie(COOKIE_NAME, formData.email, 30) // Remember for 30 days
+      setCookie(COOKIE_NAME, formData.email, 30)
     } else {
       eraseCookie(COOKIE_NAME)
     }
@@ -90,36 +89,46 @@ const Login = ({ onToggle }) => {
     }
 
     try {
-      const response = await fetch("http://tourism-backend.test/api/login", {
+      const response = await fetch("http://ctsimp-backend.test/api/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(loginData),
       })
 
       const data = await response.json()
       console.log("API Response:", data)
 
-      if (response.ok && data.token) {
-        // Save JWT & user data to localStorage
-        localStorage.setItem("jwt", data.token)
-        localStorage.setItem("user", JSON.stringify(data.user))
-        sessionStorage.setItem("name", data.user.name)
+      if (response.ok) {
+        // ─── NEW: Block users whose status is "pending" ───────────────────────
+        if (data.user?.status === "Pending") {
+          setError("Your account is still pending approval. Please check back later.")
+          setIsLoading(false)
+          return
+        }
+        // ───────────────────────────────────────────────────────────────────────
 
-        // Show success animation before redirect
-        setIsLoading(false)
-        setLoginSuccess(true)
+        if (data.token) {
+          // Save JWT & user data
+          localStorage.setItem("jwt", data.token)
+          localStorage.setItem("user", JSON.stringify(data.user))
+          sessionStorage.setItem("name", data.user.name)
 
-        // Add a 3 second delay for the success animation
-        setTimeout(() => {
-          // Redirect based on user role (email-based check)
-          if (data.user.email === ADMIN_EMAIL) {
-            navigate("/admin") // Redirect to Admin Dashboard
-          } else {
-            navigate("/dashboard") // Redirect to User Dashboard
-          }
-        }, 3000) // 3 seconds delay
+          // Success animation
+          setIsLoading(false)
+          setLoginSuccess(true)
+
+          // Delay before redirect
+          setTimeout(() => {
+            if (data.user.email === ADMIN_EMAIL) {
+              navigate("/admin")
+            } else {
+              navigate("/dashboard")
+            }
+          }, 3000)
+        } else {
+          setError(data.message || "Invalid email or password. Please try again.")
+          setIsLoading(false)
+        }
       } else {
         setError(data.message || "Invalid email or password. Please try again.")
         setIsLoading(false)
@@ -170,7 +179,7 @@ const Login = ({ onToggle }) => {
         ></div>
       </div>
 
-      {/* Success animation overlay - only shows when loginSuccess is true */}
+      {/* Success animation overlay */}
       {loginSuccess && (
         <div className="absolute inset-0 bg-emerald-50/90 flex flex-col items-center justify-center z-50 animate-fadeIn">
           <div className="relative w-16 h-16 mb-4">
@@ -197,8 +206,6 @@ const Login = ({ onToggle }) => {
           <p className="text-emerald-600 text-sm animate-fadeInUp" style={{ animationDelay: "0.2s" }}>
             Preparing your journey...
           </p>
-
-          {/* Countdown indicator */}
           <div className="mt-4 flex space-x-2">
             <div
               className="h-2 w-2 bg-emerald-400 rounded-full animate-pulse"

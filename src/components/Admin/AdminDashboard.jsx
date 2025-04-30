@@ -7,20 +7,34 @@ const AdminDashboard = () => {
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
   const [pendingPlaces, setPendingPlaces] = useState([]);
   const [approvedPlaces, setApprovedPlaces] = useState([]);
+  const [pendingUsers, setPendingUsers] = useState([]);
+  const [approvedUsers, setApprovedUsers] = useState([]);
   const [activeTab, setActiveTab] = useState("pending");
 
   useEffect(() => {
     // Fetch pending places
-    fetch("http://tourism-backend.test/api/pending")
+    fetch("http://ctsimp-backend.test/api/pending")
       .then((response) => response.json())
       .then((data) => setPendingPlaces(data))
       .catch((error) => console.error("Error fetching pending places:", error));
 
     // Fetch approved places
-    fetch("http://tourism-backend.test/api/approvedplaces")
+    fetch("http://ctsimp-backend.test/api/approvedplaces")
       .then((response) => response.json())
       .then((data) => setApprovedPlaces(data))
       .catch((error) => console.error("Error fetching approved places:", error));
+
+    // Fetch pending users
+    fetch("http://ctsimp-backend.test/api/pendingusers")
+      .then((response) => response.json())
+      .then((data) => setPendingUsers(data))
+      .catch((error) => console.error("Error fetching pending users:", error));
+
+    // Fetch approved users
+    fetch("http://ctsimp-backend.test/api/approvedusers")
+      .then((response) => response.json())
+      .then((data) => setApprovedUsers(data))
+      .catch((error) => console.error("Error fetching approved users:", error));
   }, []);
 
   const handleReviewClick = (place) => {
@@ -35,7 +49,7 @@ const AdminDashboard = () => {
 
   const updatePlaceStatus = async (id, status) => {
     try {
-      const response = await fetch(`http://tourism-backend.test/api/places/${id}/status`, {
+      const response = await fetch(`http://ctsimp-backend.test/api/places/${id}/status`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -47,10 +61,9 @@ const AdminDashboard = () => {
         throw new Error("Failed to update status.");
       }
       
-      // Refresh data instead of reloading the page
       if (status === "Approved") {
         setPendingPlaces(pendingPlaces.filter(place => place.id !== id));
-        fetch("http://tourism-backend.test/api/approvedplaces")
+        fetch("http://ctsimp-backend.test/api/approvedplaces")
           .then((response) => response.json())
           .then((data) => setApprovedPlaces(data));
       } else {
@@ -58,6 +71,31 @@ const AdminDashboard = () => {
       }
     } catch (error) {
       console.error("Error updating status:", error);
+    }
+  };
+
+  const updateUserStatus = async (id, status) => {
+    try {
+      const response = await fetch(`http://ctsimp-backend.test/api/users/${id}/status`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status }),
+      });
+
+      if (!response.ok) throw new Error("Failed to update user status.");
+      
+      if (status === "Approved") {
+        setPendingUsers(pendingUsers.filter(user => user.id !== id));
+        fetch("http://ctsimp-backend.test/api/approvedusers")
+          .then((response) => response.json())
+          .then((data) => setApprovedUsers(data));
+      } else {
+        setPendingUsers(pendingUsers.filter(user => user.id !== id));
+      }
+    } catch (error) {
+      console.error("Error updating user status:", error);
     }
   };
 
@@ -101,10 +139,58 @@ const AdminDashboard = () => {
                   <line x1="16" y1="17" x2="8" y2="17"></line>
                   <polyline points="10 9 9 9 8 9"></polyline>
                 </svg>
-                Description
+                Description hala
               </h3>
               <p className="text-gray-700 bg-emerald-50 p-4 rounded-md">{place.description}</p>
             </section>
+
+            {/* New History Section */}
+  <section>
+    <h3 className="font-medium text-lg mb-2 text-emerald-700 flex items-center">
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zM12 8v4l3 3"/>
+      </svg>
+      History
+    </h3>
+    <p className="text-gray-700 bg-emerald-50 p-4 rounded-md">{place.history || "No historical information available"}</p>
+  </section>
+
+  {/* New Activities Section */}
+  <section>
+    <h3 className="font-medium text-lg mb-2 text-emerald-700 flex items-center">
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+        <circle cx="9" cy="7" r="4"></circle>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+      </svg>
+      Activities
+    </h3>
+    <p className="text-gray-700 bg-emerald-50 p-4 rounded-md whitespace-pre-line">{place.activities || "No activities listed"}</p>
+  </section>
+
+  {/* New Pricing Section */}
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <section>
+      <h3 className="font-medium text-lg mb-2 text-emerald-700 flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+        </svg>
+        Entrance Fee
+      </h3>
+      <p className="text-gray-700 bg-emerald-50 p-4 rounded-md">{place.entrance || "Free entrance"}</p>
+    </section>
+
+    <section>
+      <h3 className="font-medium text-lg mb-2 text-emerald-700 flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+        </svg>
+        Accommodation Prices
+      </h3>
+      <p className="text-gray-700 bg-emerald-50 p-4 rounded-md">{place.room_or_cottages_price || "No accommodation available"}</p>
+    </section>
+  </div>
 
             <section>
               <h3 className="font-medium text-lg mb-2 text-emerald-700 flex items-center">
@@ -117,7 +203,7 @@ const AdminDashboard = () => {
               </h3>
               <div className="border border-emerald-200 rounded-lg overflow-hidden shadow-md">
                 <img
-                  src={`http://tourism-backend.test/storage/${place.image_link}`}
+                  src={`http://ctsimp-backend.test/storage/${place.image_link}`}
                   alt={place.name}
                   className="w-full h-auto"
                 />
@@ -191,7 +277,7 @@ const AdminDashboard = () => {
                 onClose();
               }}
             >
-              Reject
+              Reject dri
             </button>
           </div>
         </div>
@@ -222,7 +308,7 @@ const AdminDashboard = () => {
 
       try {
         setLoading(true);
-        const response = await fetch("http://tourism-backend.test/api/change-password", {
+        const response = await fetch("http://ctsimp-backend.test/api/change-password", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -448,7 +534,7 @@ const AdminDashboard = () => {
                 }`}
                 onClick={() => setActiveTab("pending")}
               >
-                Pending Places
+                Pending Places hiiii
                 {pendingPlaces.length > 0 && (
                   <span className="absolute top-2 right-0 bg-amber-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                     {pendingPlaces.length}
@@ -464,6 +550,31 @@ const AdminDashboard = () => {
                 onClick={() => setActiveTab("approved")}
               >
                 Approved Places
+              </button>
+               <button
+                className={`px-6 py-3 font-medium text-sm transition-colors relative ${
+                  activeTab === "pendingUsers" 
+                    ? "text-emerald-700 border-b-2 border-emerald-600" 
+                    : "text-emerald-600 hover:text-emerald-800"
+                }`}
+                onClick={() => setActiveTab("pendingUsers")}
+              >
+                Pending Users
+                {pendingUsers.length > 0 && (
+                  <span className="absolute top-2 right-0 bg-amber-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    {pendingUsers.length}
+                  </span>
+                )}
+              </button>
+              <button
+                className={`px-6 py-3 font-medium text-sm transition-colors ${
+                  activeTab === "approvedUsers" 
+                    ? "text-emerald-700 border-b-2 border-emerald-600" 
+                    : "text-emerald-600 hover:text-emerald-800"
+                }`}
+                onClick={() => setActiveTab("approvedUsers")}
+              >
+                Approved Users
               </button>
             </div>
           </div>
@@ -508,7 +619,7 @@ const AdminDashboard = () => {
                                 className="px-3 py-1 bg-emerald-600 text-white rounded hover:bg-emerald-700 transition-colors text-xs font-medium"
                                 onClick={() => handleReviewClick(place)}
                               >
-                                Review
+                                Review KANI
                               </button>
                               <button
                                 className="px-3 py-1 bg-emerald-100 text-emerald-700 rounded hover:bg-emerald-200 transition-colors text-xs font-medium"
@@ -520,7 +631,7 @@ const AdminDashboard = () => {
                                 className="px-3 py-1 bg-red-100 text-red-700 rounded hover:bg-red-200 transition-colors text-xs font-medium"
                                 onClick={() => updatePlaceStatus(place.id, "Rejected")}
                               >
-                                Reject
+                                Reject gawas
                               </button>
                             </div>
                           </td>
@@ -579,9 +690,111 @@ const AdminDashboard = () => {
                 )}
               </div>
             )}
+            
+           {/* New User Management Tabs */}
+            {activeTab === "pendingUsers" && (
+              <div className="overflow-x-auto">
+                {pendingUsers.length === 0 ? (
+                  <div className="text-center py-12">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-emerald-300 mx-auto mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="12" y1="8" x2="12" y2="12"></line>
+                      <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <h3 className="text-lg font-medium text-gray-700">No Pending Users</h3>
+                    <p className="text-gray-500 mt-1">All user requests have been reviewed</p>
+                  </div>
+                ) : (
+                  <table className="w-full border-collapse">
+                    <thead>
+                      <tr className="bg-emerald-50">
+                        <th className="px-4 py-3 text-left text-xs font-medium text-emerald-700 uppercase tracking-wider border-b border-emerald-200">#</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-emerald-700 uppercase tracking-wider border-b border-emerald-200">Name</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-emerald-700 uppercase tracking-wider border-b border-emerald-200">Email</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-emerald-700 uppercase tracking-wider border-b border-emerald-200">Contact</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-emerald-700 uppercase tracking-wider border-b border-emerald-200">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-emerald-100">
+                      {pendingUsers.map((user, index) => (
+                        <tr key={user.id} className="hover:bg-emerald-50 transition-colors">
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">{index + 1}</td>
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">{user.name}</td>
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">{user.email}</td>
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">{user.contact_number}</td>
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
+                            <div className="flex gap-2">
+                              <button
+                                className="px-3 py-1 bg-emerald-600 text-white rounded hover:bg-emerald-700 transition-colors text-xs font-medium"
+                                onClick={() => updateUserStatus(user.id, "Approved")}
+                              >
+                                Approve
+                              </button>
+                              <button
+                                className="px-3 py-1 bg-red-100 text-red-700 rounded hover:bg-red-200 transition-colors text-xs font-medium"
+                                onClick={() => updateUserStatus(user.id, "Rejected")}
+                              >
+                                Reject
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+            )}
+
+            {activeTab === "approvedUsers" && (
+              <div className="overflow-x-auto">
+                {approvedUsers.length === 0 ? (
+                  <div className="text-center py-12">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-emerald-300 mx-auto mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <line x1="12" y1="8" x2="12" y2="12"></line>
+                      <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <h3 className="text-lg font-medium text-gray-700">No Approved Users Yet</h3>
+                    <p className="text-gray-500 mt-1">Approved users will appear here</p>
+                  </div>
+                ) : (
+                  <table className="w-full border-collapse">
+                    <thead>
+                      <tr className="bg-emerald-50">
+                        <th className="px-4 py-3 text-left text-xs font-medium text-emerald-700 uppercase tracking-wider border-b border-emerald-200">#</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-emerald-700 uppercase tracking-wider border-b border-emerald-200">Name</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-emerald-700 uppercase tracking-wider border-b border-emerald-200">Email</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-emerald-700 uppercase tracking-wider border-b border-emerald-200"></th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-emerald-700 uppercase tracking-wider border-b border-emerald-200">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-emerald-100">
+                      {approvedUsers.map((user, index) => (
+                        <tr key={user.id} className="hover:bg-emerald-50 transition-colors">
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">{index + 1}</td>
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">{user.name}</td>
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">{user.email}</td>
+                          <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">{user.contact_number}</td>
+                          <td className="px-4 py-3 whitespace-nowrap">
+                            <span className="px-2 py-1 me-3 bg-emerald-100 text-emerald-700 rounded-full text-xs">Approved</span>
+                            <button
+                                className="px-3 py-1 bg-red-100 text-red-700 rounded-full hover:bg-red-200 transition-colors text-xs font-medium"
+                                onClick={() => updateUserStatus(user.id, "Rejected")}
+                              >
+                                Reject
+                              </button>
+                          </td> 
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+            )}
           </div>
-          
-          {/* Footer */}
+
+          {/* Footer remains unchanged */}
           <div className="bg-emerald-50 px-6 py-4 border-t border-emerald-100 text-center">
             <p className="text-xs text-emerald-700">
               Department of Tourism - Caraga Region
@@ -592,6 +805,7 @@ const AdminDashboard = () => {
           </div>
         </div>
       </div>
+      
       
       {/* Modals */}
       <PasswordChangeModal />
