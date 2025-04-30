@@ -9,7 +9,7 @@ const Modal = ({ onClose }) => {
   useEffect(() => {
     const fetchPlaces = async () => {
       try {
-        const response = await fetch("http://ctsimp-backend.test/api/places")
+        const response = await fetch("http://tourism-backend.test/api/places")
         if (response.ok) {
           const data = await response.json()
           setPlaces(data)

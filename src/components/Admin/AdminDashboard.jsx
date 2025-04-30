@@ -13,25 +13,25 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     // Fetch pending places
-    fetch("http://ctsimp-backend.test/api/pending")
+    fetch("http://tourism-backend.test/api/pending")
       .then((response) => response.json())
       .then((data) => setPendingPlaces(data))
       .catch((error) => console.error("Error fetching pending places:", error));
 
     // Fetch approved places
-    fetch("http://ctsimp-backend.test/api/approvedplaces")
+    fetch("http://tourism-backend.test/api/approvedplaces")
       .then((response) => response.json())
       .then((data) => setApprovedPlaces(data))
       .catch((error) => console.error("Error fetching approved places:", error));
 
     // Fetch pending users
-    fetch("http://ctsimp-backend.test/api/pendingusers")
+    fetch("http://tourism-backend.test/api/pendingusers")
       .then((response) => response.json())
       .then((data) => setPendingUsers(data))
       .catch((error) => console.error("Error fetching pending users:", error));
 
     // Fetch approved users
-    fetch("http://ctsimp-backend.test/api/approvedusers")
+    fetch("http://tourism-backend.test/api/approvedusers")
       .then((response) => response.json())
       .then((data) => setApprovedUsers(data))
       .catch((error) => console.error("Error fetching approved users:", error));
@@ -49,7 +49,7 @@ const AdminDashboard = () => {
 
   const updatePlaceStatus = async (id, status) => {
     try {
-      const response = await fetch(`http://ctsimp-backend.test/api/places/${id}/status`, {
+      const response = await fetch(`http://tourism-backend.test/api/places/${id}/status`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -63,7 +63,7 @@ const AdminDashboard = () => {
       
       if (status === "Approved") {
         setPendingPlaces(pendingPlaces.filter(place => place.id !== id));
-        fetch("http://ctsimp-backend.test/api/approvedplaces")
+        fetch("http://tourism-backend.test/api/approvedplaces")
           .then((response) => response.json())
           .then((data) => setApprovedPlaces(data));
       } else {
@@ -76,7 +76,7 @@ const AdminDashboard = () => {
 
   const updateUserStatus = async (id, status) => {
     try {
-      const response = await fetch(`http://ctsimp-backend.test/api/users/${id}/status`, {
+      const response = await fetch(`http://tourism-backend.test/api/users/${id}/status`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -88,7 +88,7 @@ const AdminDashboard = () => {
       
       if (status === "Approved") {
         setPendingUsers(pendingUsers.filter(user => user.id !== id));
-        fetch("http://ctsimp-backend.test/api/approvedusers")
+        fetch("http://tourism-backend.test/api/approvedusers")
           .then((response) => response.json())
           .then((data) => setApprovedUsers(data));
       } else {
@@ -203,7 +203,7 @@ const AdminDashboard = () => {
               </h3>
               <div className="border border-emerald-200 rounded-lg overflow-hidden shadow-md">
                 <img
-                  src={`http://ctsimp-backend.test/storage/${place.image_link}`}
+                  src={`http://tourism-backend.test/storage/${place.image_link}`}
                   alt={place.name}
                   className="w-full h-auto"
                 />
@@ -308,7 +308,7 @@ const AdminDashboard = () => {
 
       try {
         setLoading(true);
-        const response = await fetch("http://ctsimp-backend.test/api/change-password", {
+        const response = await fetch("http://tourism-backend.test/api/change-password", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

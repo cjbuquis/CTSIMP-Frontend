@@ -57,7 +57,7 @@ export default function Carousel() {
   }
 
   useEffect(() => {
-    fetch("http://ctsimp-backend.test/api/approvedplaces")
+    fetch("http://tourism-backend.test/api/approvedplaces")
       .then((response) => response.json())
       .then((data) => {
         setImages(
