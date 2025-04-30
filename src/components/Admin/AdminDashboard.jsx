@@ -534,7 +534,7 @@ const AdminDashboard = () => {
                 }`}
                 onClick={() => setActiveTab("pending")}
               >
-                Pending Places hiiii
+                Pending Places
                 {pendingPlaces.length > 0 && (
                   <span className="absolute top-2 right-0 bg-amber-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                     {pendingPlaces.length}
@@ -619,7 +619,7 @@ const AdminDashboard = () => {
                                 className="px-3 py-1 bg-emerald-600 text-white rounded hover:bg-emerald-700 transition-colors text-xs font-medium"
                                 onClick={() => handleReviewClick(place)}
                               >
-                                Review KANI
+                                Review
                               </button>
                               <button
                                 className="px-3 py-1 bg-emerald-100 text-emerald-700 rounded hover:bg-emerald-200 transition-colors text-xs font-medium"
@@ -631,7 +631,7 @@ const AdminDashboard = () => {
                                 className="px-3 py-1 bg-red-100 text-red-700 rounded hover:bg-red-200 transition-colors text-xs font-medium"
                                 onClick={() => updatePlaceStatus(place.id, "Rejected")}
                               >
-                                Reject gawas
+                                Reject
                               </button>
                             </div>
                           </td>
