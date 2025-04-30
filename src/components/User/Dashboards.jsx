@@ -1,8 +1,7 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-// Remove the lucide-react import
 import Header from "./Header"
 import FilePreview from "./FilePreview"
 import Modal from "./Modal"
@@ -16,7 +15,7 @@ const MapPinIcon = (props) => (
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
-    strokeWidth="2"
+    strokeWidth="2" 
     strokeLinecap="round"
     strokeLinejoin="round"
     {...props}
@@ -176,6 +175,7 @@ const AlertCircleIcon = (props) => (
 )
 
 const Dashboard = () => {
+  const [userId, setUserId] = useState(null) // State to store the user ID
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [previewUrl, setPreviewUrl] = useState(null)
   const [snackbar, setSnackbar] = useState({
@@ -205,14 +205,13 @@ const Dashboard = () => {
   const [isEditing, setIsEditing] = useState(false)
   const [editingId, setEditingId] = useState(null)
 
-  const fileInputRef = useRef(null)
-
   // Set the name field from localStorage when the component mounts
   useEffect(() => {
     try {
       const userData = localStorage.getItem("user")
       if (userData) {
         const user = JSON.parse(userData)
+        setUserId(user.id) // Assuming the user object contains an `id` field
         setFormData((prevData) => ({
           ...prevData,
           name: user.name || user.email || "",
@@ -318,7 +317,11 @@ const Dashboard = () => {
       }
     }
 
+    formDataToSubmit.append("user_id", userId) // Add user_id from state
+
     try {
+      const jwt = localStorage.getItem("jwt") // Retrieve the JWT token from local storage
+
       const endpoint = isEditing
         ? `http://tourism-backend.test/api/places/${editingId}`
         : "http://tourism-backend.test/api/places"
@@ -329,6 +332,7 @@ const Dashboard = () => {
         method: method,
         headers: {
           Accept: "application/json",
+          Authorization: `Bearer ${jwt}`, // Include the JWT token in the Authorization header
         },
         body: formDataToSubmit,
       })
@@ -864,7 +868,7 @@ const Dashboard = () => {
 
               {/* Image Preview */}
               <motion.div className="lg:col-span-1" variants={itemVariants}>
-                <FilePreview previewUrl={previewUrl} onFileChange={handleFileChange} fileInputRef={fileInputRef} />
+                <FilePreview previewUrl={previewUrl} onFileChange={handleFileChange} />
                 {errors.image_link && <p className="mt-1 text-sm text-red-600">{errors.image_link}</p>}
               </motion.div>
             </motion.div>

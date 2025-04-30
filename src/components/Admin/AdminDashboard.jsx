@@ -11,31 +11,55 @@ const AdminDashboard = () => {
   const [approvedUsers, setApprovedUsers] = useState([]);
   const [activeTab, setActiveTab] = useState("pending");
 
+  const jwt = localStorage.getItem("jwt"); // Retrieve the JWT token from local storage
+
   useEffect(() => {
+    if (!jwt) {
+      console.error("User not authenticated. Redirecting to login.");
+      window.location.href = "/login"; // Redirect to login if no token is found
+      return;
+    }
+
     // Fetch pending places
-    fetch("http://tourism-backend.test/api/pending")
+    fetch("http://tourism-backend.test/api/pending", {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => setPendingPlaces(data))
       .catch((error) => console.error("Error fetching pending places:", error));
 
     // Fetch approved places
-    fetch("http://tourism-backend.test/api/approvedplaces")
+    fetch("http://tourism-backend.test/api/approvedplaces", {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => setApprovedPlaces(data))
       .catch((error) => console.error("Error fetching approved places:", error));
 
     // Fetch pending users
-    fetch("http://tourism-backend.test/api/pendingusers")
+    fetch("http://tourism-backend.test/api/pendingusers", {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => setPendingUsers(data))
       .catch((error) => console.error("Error fetching pending users:", error));
 
     // Fetch approved users
-    fetch("http://tourism-backend.test/api/approvedusers")
+    fetch("http://tourism-backend.test/api/approvedusers", {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    })
       .then((response) => response.json())
       .then((data) => setApprovedUsers(data))
       .catch((error) => console.error("Error fetching approved users:", error));
-  }, []);
+  }, [jwt]);
 
   const handleReviewClick = (place) => {
     setSelectedPlace(place);
@@ -53,6 +77,7 @@ const AdminDashboard = () => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${jwt}`, // Include the JWT token
         },
         body: JSON.stringify({ status }),
       });
@@ -63,7 +88,11 @@ const AdminDashboard = () => {
       
       if (status === "Approved") {
         setPendingPlaces(pendingPlaces.filter(place => place.id !== id));
-        fetch("http://tourism-backend.test/api/approvedplaces")
+        fetch("http://tourism-backend.test/api/approvedplaces", {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        })
           .then((response) => response.json())
           .then((data) => setApprovedPlaces(data));
       } else {
@@ -80,6 +109,7 @@ const AdminDashboard = () => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${jwt}`, // Include the JWT token
         },
         body: JSON.stringify({ status }),
       });
@@ -88,7 +118,11 @@ const AdminDashboard = () => {
       
       if (status === "Approved") {
         setPendingUsers(pendingUsers.filter(user => user.id !== id));
-        fetch("http://tourism-backend.test/api/approvedusers")
+        fetch("http://tourism-backend.test/api/approvedusers", {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        })
           .then((response) => response.json())
           .then((data) => setApprovedUsers(data));
       } else {
@@ -101,6 +135,7 @@ const AdminDashboard = () => {
 
   const handleSignOut = () => {
     localStorage.clear();
+    window.location.href = "/login"; // Redirect to login after sign-out
   };
 
   const PlaceDetailsModal = ({ place, isOpen, onClose }) => {
