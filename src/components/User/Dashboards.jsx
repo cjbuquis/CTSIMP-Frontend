@@ -2,9 +2,178 @@
 
 import { useState, useRef, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+// Remove the lucide-react import
 import Header from "./Header"
 import FilePreview from "./FilePreview"
 import Modal from "./Modal"
+
+// Add custom icon components
+const MapPinIcon = (props) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+    <circle cx="12" cy="10" r="3"></circle>
+  </svg>
+)
+
+const MailIcon = (props) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+  </svg>
+)
+
+const PhoneIcon = (props) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+  </svg>
+)
+
+const FileTextIcon = (props) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+    <polyline points="14 2 14 8 20 8"></polyline>
+    <line x1="16" y1="13" x2="8" y2="13"></line>
+    <line x1="16" y1="17" x2="8" y2="17"></line>
+    <polyline points="10 9 9 9 8 9"></polyline>
+  </svg>
+)
+
+const MapIcon = (props) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
+    <line x1="8" y1="2" x2="8" y2="18"></line>
+    <line x1="16" y1="6" x2="16" y2="22"></line>
+  </svg>
+)
+
+const VideoIcon = (props) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <polygon points="23 7 16 12 23 17 23 7"></polygon>
+    <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+  </svg>
+)
+
+const HistoryIcon = (props) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <path d="M3 3v5h5"></path>
+    <path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"></path>
+    <path d="M12 7v5l4 2"></path>
+  </svg>
+)
+
+const CheckCircleIcon = (props) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+  </svg>
+)
+
+const AlertCircleIcon = (props) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <circle cx="12" cy="12" r="10"></circle>
+    <line x1="12" y1="8" x2="12" y2="12"></line>
+    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+  </svg>
+)
 
 const Dashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -16,7 +185,7 @@ const Dashboard = () => {
   })
   const [formData, setFormData] = useState({
     name: "", // This will be populated from sessionStorage
-    place_name: "", // User will input this manually
+    place_name: "",
     address: "",
     email_address: "",
     contact_no: "",
@@ -29,6 +198,7 @@ const Dashboard = () => {
     room_or_cottages_price: "",
     history: "",
     activities: "",
+    services: "", // Add new services field
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -36,12 +206,17 @@ const Dashboard = () => {
 
   // Set the name field from sessionStorage when the component mounts
   useEffect(() => {
-    const storedName = sessionStorage.getItem("name")
-    if (storedName) {
-      setFormData((prevData) => ({
-        ...prevData,
-        name: storedName,
-      }))
+    try {
+      const userData = localStorage.getItem("user")
+      if (userData) {
+        const user = JSON.parse(userData)
+        setFormData((prevData) => ({
+          ...prevData,
+          name: user.name || user.email || "",
+        }))
+      }
+    } catch (error) {
+      console.error("Error parsing user data:", error)
     }
   }, [])
 
@@ -95,7 +270,9 @@ const Dashboard = () => {
 
     // Append form data
     for (const key in formData) {
-      formDataToSubmit.append(key, formData[key])
+      if (formData[key] !== null) {
+        formDataToSubmit.append(key, formData[key])
+      }
     }
 
     try {
@@ -182,22 +359,14 @@ const Dashboard = () => {
             transition={{ delay: 0.3, duration: 0.5 }}
           >
             <div className="flex items-center">
-              <motion.svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-8 w-8 text-white mr-3"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+              <motion.div
                 initial={{ rotate: -90, opacity: 0 }}
                 animate={{ rotate: 0, opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.5 }}
+                className="mr-3"
               >
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                <circle cx="12" cy="10" r="3"></circle>
-              </motion.svg>
+                <MapPinIcon className="h-8 w-8 text-white" />
+              </motion.div>
               <motion.div
                 initial={{ x: -20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
@@ -227,25 +396,13 @@ const Dashboard = () => {
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5 text-emerald-500"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                          <circle cx="12" cy="10" r="3"></circle>
-                        </svg>
+                        <MapPinIcon className="h-5 w-5 text-emerald-500" />
                       </div>
                       <input
                         id="place_name"
                         type="text"
                         placeholder="e.g, Tinuy-an Falls"
-                        value={formData.place_name || ""}
+                        value={formData.place_name}
                         onChange={handleChange}
                         name="place_name"
                         className="pl-10 w-full px-4 py-2 border border-emerald-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300"
@@ -260,25 +417,13 @@ const Dashboard = () => {
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5 text-emerald-500"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path>
-                          <circle cx="12" cy="10" r="3"></circle>
-                        </svg>
+                        <MapPinIcon className="h-5 w-5 text-emerald-500" />
                       </div>
                       <input
                         id="address"
                         type="text"
                         placeholder="e.g, Bislig, Surigao Del Sur"
-                        value={formData.address || ""}
+                        value={formData.address}
                         onChange={handleChange}
                         name="address"
                         className="pl-10 w-full px-4 py-2 border border-emerald-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300"
@@ -293,25 +438,13 @@ const Dashboard = () => {
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5 text-emerald-500"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                          <polyline points="22,6 12,13 2,6"></polyline>
-                        </svg>
+                        <MailIcon className="h-5 w-5 text-emerald-500" />
                       </div>
                       <input
                         id="email"
                         type="email"
                         placeholder="e.g, example@gmail.com"
-                        value={formData.email_address || ""}
+                        value={formData.email_address}
                         onChange={handleChange}
                         name="email_address"
                         className="pl-10 w-full px-4 py-2 border border-emerald-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300"
@@ -326,24 +459,13 @@ const Dashboard = () => {
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5 text-emerald-500"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                        </svg>
+                        <PhoneIcon className="h-5 w-5 text-emerald-500" />
                       </div>
                       <input
                         id="contact"
                         type="tel"
                         placeholder="e.g, 09518149753"
-                        value={formData.contact_no || ""}
+                        value={formData.contact_no}
                         onChange={handleChange}
                         name="contact_no"
                         className="pl-10 w-full px-4 py-2 border border-emerald-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300"
@@ -359,6 +481,26 @@ const Dashboard = () => {
                   </label>
                   <div className="relative">
                     <div className="absolute top-3 left-3 flex items-start pointer-events-none">
+                      <FileTextIcon className="h-5 w-5 text-emerald-500" />
+                    </div>
+                    <textarea
+                      id="description"
+                      placeholder="Spot Description..."
+                      value={formData.description}
+                      onChange={handleChange}
+                      name="description"
+                      className="pl-10 w-full px-4 py-2 border border-emerald-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent min-h-[120px] transition-all duration-300"
+                    />
+                  </div>
+                </motion.div>
+
+                {/* Entrance Fee */}
+                <motion.div variants={itemVariants}>
+                  <label htmlFor="entrance" className="block text-sm font-medium text-emerald-700 mb-1">
+                    Entrance Fee
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         className="h-5 w-5 text-emerald-500"
@@ -369,19 +511,140 @@ const Dashboard = () => {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                       >
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
-                        <line x1="16" y1="13" x2="8" y2="13"></line>
-                        <line x1="16" y1="17" x2="8" y2="17"></line>
-                        <polyline points="10 9 9 9 8 9"></polyline>
+                        <text x="6" y="18" fontSize="16" fontWeight="bold">
+                          ₱
+                        </text>
+                      </svg>
+                    </div>
+                    <input
+                      id="entrance"
+                      type="text"
+                      placeholder="e.g, ₱50 per person"
+                      value={formData.entrance}
+                      onChange={handleChange}
+                      name="entrance"
+                      className="pl-10 w-full px-4 py-2 border border-emerald-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300"
+                    />
+                  </div>
+                </motion.div>
+
+                {/* Room/Cottages Price*/}
+                <motion.div variants={itemVariants}>
+                  <label htmlFor="roomPrice" className="block text-sm font-medium text-emerald-700 mb-1">
+                    Room/Cottages Price
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5 text-emerald-500"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <text x="6" y="18" fontSize="16" fontWeight="bold">
+                          ₱
+                        </text>
+                      </svg>
+                    </div>
+                    <input
+                      id="roomPrice"
+                      type="text"
+                      placeholder="e.g, ₱1500 per night"
+                      value={formData.room_or_cottages_price}
+                      onChange={handleChange}
+                      name="room_or_cottages_price"
+                      className="pl-10 w-full px-4 py-2 border border-emerald-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300"
+                    />
+                  </div>
+                </motion.div>
+
+                {/* History */}
+                <motion.div variants={itemVariants}>
+                  <label htmlFor="history" className="block text-sm font-medium text-emerald-700 mb-1">
+                    History
+                  </label>
+                  <div className="relative">
+                    <div className="absolute top-3 left-3 flex items-start pointer-events-none">
+                      <HistoryIcon className="h-5 w-5 text-emerald-500" />
+                    </div>
+                    <textarea
+                      id="history"
+                      placeholder="Historical background..."
+                      value={formData.history}
+                      onChange={handleChange}
+                      name="history"
+                      className="pl-10 w-full px-4 py-2 border border-emerald-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent min-h-[120px] transition-all duration-300"
+                    />
+                  </div>
+                </motion.div>
+
+                {/* Activities */}
+                <motion.div variants={itemVariants}>
+                  <label htmlFor="activities" className="block text-sm font-medium text-emerald-700 mb-1">
+                    Activities
+                  </label>
+                  <div className="relative">
+                    <div className="absolute top-3 left-3 flex items-start pointer-events-none">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5 text-emerald-500"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M14 2l-4 4-4-4"></path>
+                        <path d="M14 22l-4-4-4 4"></path>
+                        <path d="M6 18V6"></path>
+                        <path d="M18 18V6"></path>
                       </svg>
                     </div>
                     <textarea
-                      id="description"
-                      placeholder="Spot Description..."
-                      value={formData.description || ""}
+                      id="activities"
+                      placeholder="Available activities (e.g., hiking, sightseeing, camping)..."
+                      value={formData.activities}
                       onChange={handleChange}
-                      name="description"
+                      name="activities"
+                      className="pl-10 w-full px-4 py-2 border border-emerald-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent min-h-[120px] transition-all duration-300"
+                    />
+                  </div>
+                </motion.div>
+
+                {/* Services */}
+                <motion.div variants={itemVariants}>
+                  <label htmlFor="services" className="block text-sm font-medium text-emerald-700 mb-1">
+                    Services
+                  </label>
+                  <div className="relative">
+                    <div className="absolute top-3 left-3 flex items-start pointer-events-none">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5 text-emerald-500"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M12 2H2v10h10V2z"></path>
+                        <path d="M12 12H2v10h10V12z"></path>
+                        <path d="M22 2h-10v10h10V2z"></path>
+                        <path d="M22 12h-10v10h10V12z"></path>
+                      </svg>
+                    </div>
+                    <textarea
+                      id="services"
+                      placeholder="Available services (e.g., Accommodation & Lodging, Food & Beverage Services, Equipment Rental & Support)..."
+                      value={formData.services}
+                      onChange={handleChange}
+                      name="services"
                       className="pl-10 w-full px-4 py-2 border border-emerald-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent min-h-[120px] transition-all duration-300"
                     />
                   </div>
@@ -404,196 +667,12 @@ const Dashboard = () => {
                   </label>
                   <div className="relative">
                     <div className="absolute top-3 left-3 flex items-start pointer-events-none">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5 text-emerald-500"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
-                        <line x1="8" y1="2" x2="8" y2="18"></line>
-                        <line x1="16" y1="6" x2="16" y2="22"></line>
-                      </svg>
+                      <MapIcon className="h-5 w-5 text-emerald-500" />
                     </div>
                     <textarea
                       id="googleMap"
                       placeholder="e.g, (https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d126440.1668895862!2d123.76526621796874!3d7.972554395731812!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sph!4v1732520001105!5m2!1sen!2sph)"
-                      value={formData.map_iframe || ""}
-                      onChange={handleChange}
-                      name="map_iframe"
-                      className="pl-10 w-full px-4 py-2 border border-emerald-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent min-h-[100px] transition-all duration-300"
-                      rows={4}
-                    />
-                  </div>
-                </motion.div>
-
-{/* History */}
-<motion.div variants={itemVariants}>
-  <label htmlFor="entrance" className="block text-sm font-medium text-emerald-700 mb-1">
-    Entrance Fee
-  </label>
-  <div className="relative">
-    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-5 w-5 text-emerald-500"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-      </svg>
-    </div>
-    <input
-      id="entrance"
-      type="text"
-      placeholder="e.g, ₱50 per person"
-      value={formData.entrance || ""}
-      onChange={handleChange}
-      name="entrance"
-      className="pl-10 w-full px-4 py-2 border border-emerald-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300"
-    />
-  </div>
-</motion.div>
-
-{/* Room/Cottages Price*/}
-<motion.div variants={itemVariants}>
-  <label htmlFor="roomPrice" className="block text-sm font-medium text-emerald-700 mb-1">
-    Room/Cottages Price
-  </label>
-  <div className="relative">
-    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-5 w-5 text-emerald-500"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-      </svg>
-    </div>
-    <input
-      id="roomPrice"
-      type="text"
-      placeholder="e.g, ₱1500 per night"
-      value={formData.room_or_cottages_price || ""}
-      onChange={handleChange}
-      name="room_or_cottages_price"
-      className="pl-10 w-full px-4 py-2 border border-emerald-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-300"
-    />
-  </div>
-</motion.div>
-
-{/* Activities */}
-<motion.div variants={itemVariants}>
-  <label htmlFor="history" className="block text-sm font-medium text-emerald-700 mb-1">
-    History
-  </label>
-  <div className="relative">
-    <div className="absolute top-3 left-3 flex items-start pointer-events-none">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-5 w-5 text-emerald-500"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-      </svg>
-    </div>
-    <textarea
-      id="history"
-      placeholder="Historical background..."
-      value={formData.history || ""}
-      onChange={handleChange}
-      name="history"
-      className="pl-10 w-full px-4 py-2 border border-emerald-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent min-h-[120px] transition-all duration-300"
-    />
-  </div>
-</motion.div>        
-
-{/* Activities */}
-<motion.div variants={itemVariants}>
-  <label htmlFor="activities" className="block text-sm font-medium text-emerald-700 mb-1">
-    Activities
-  </label>
-  <div className="relative">
-    <div className="absolute top-3 left-3 flex items-start pointer-events-none">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-5 w-5 text-emerald-500"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <circle cx="12" cy="12" r="10"/>
-        <path d="M16 8l-8 8M8 8l8 8"/>
-      </svg>
-    </div>
-    <textarea
-      id="activities"
-      placeholder="Available activities..."
-      value={formData.activities || ""}
-      onChange={handleChange}
-      name="activities"
-      className="pl-10 w-full px-4 py-2 border border-emerald-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent min-h-[120px] transition-all duration-300"
-    />
-  </div>
-</motion.div>
-
-{/* Google Map iframe */}
-<motion.div variants={itemVariants}>
-                  <label htmlFor="googleMap" className="block text-sm font-medium text-emerald-700 mb-1">
-                    Google Map iframe
-                    <span className="ml-5">
-                      <a
-                        href="https://youtube.com/watch?v=T5FaFLeERLs&si=3rAhKhMruFZitpAb"
-                        className="text-emerald-600 hover:text-emerald-700 underline transition-colors duration-300"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        (For Tutorial, click here)
-                      </a>
-                    </span>
-                  </label>
-                  <div className="relative">
-                    <div className="absolute top-3 left-3 flex items-start pointer-events-none">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5 text-emerald-500"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
-                        <line x1="8" y1="2" x2="8" y2="18"></line>
-                        <line x1="16" y1="6" x2="16" y2="22"></line>
-                      </svg>
-                    </div>
-                    <textarea
-                      id="googleMap"
-                      placeholder="e.g, (https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d126440.1668895862!2d123.76526621796874!3d7.972554395731812!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sph!4v1732520001105!5m2!1sen!2sph)"
-                      value={formData.map_iframe || ""}
+                      value={formData.map_iframe}
                       onChange={handleChange}
                       name="map_iframe"
                       className="pl-10 w-full px-4 py-2 border border-emerald-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent min-h-[100px] transition-all duration-300"
@@ -619,24 +698,12 @@ const Dashboard = () => {
                   </label>
                   <div className="relative">
                     <div className="absolute top-3 left-3 flex items-start pointer-events-none">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5 text-emerald-500"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <polygon points="10 8 16 12 10 16 10 8"></polygon>
-                      </svg>
+                      <VideoIcon className="h-5 w-5 text-emerald-500" />
                     </div>
                     <textarea
                       id="visualTour"
                       placeholder="e.g, (https://webobook.com/public/67307f5970d3461cbc339ac2,en?ap=true&si=true&sm=false&sp=true&sfr=false&sl=false&sop=false&)"
-                      value={formData.virtual_iframe || ""}
+                      value={formData.virtual_iframe}
                       onChange={handleChange}
                       name="virtual_iframe"
                       className="pl-10 w-full px-4 py-2 border border-emerald-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent min-h-[80px] transition-all duration-300"
@@ -732,40 +799,17 @@ const Dashboard = () => {
           >
             <span className="mr-2">
               {snackbar.color === "success" ? (
-                <motion.svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+                <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1, rotate: [0, 20, 0] }}
                   transition={{ delay: 0.2, duration: 0.5 }}
                 >
-                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                </motion.svg>
+                  <CheckCircleIcon className="h-5 w-5" />
+                </motion.div>
               ) : (
-                <motion.svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 0.2, duration: 0.5 }}
-                >
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <line x1="12" y1="8" x2="12" y2="12"></line>
-                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                </motion.svg>
+                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, duration: 0.5 }}>
+                  <AlertCircleIcon className="h-5 w-5" />
+                </motion.div>
               )}
             </span>
             <span>{snackbar.text}</span>
@@ -795,4 +839,3 @@ const Dashboard = () => {
 }
 
 export default Dashboard
-

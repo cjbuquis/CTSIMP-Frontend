@@ -2,6 +2,26 @@
 
 import { motion } from "framer-motion"
 
+// Custom ImageIcon
+const ImageIcon = (props) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    {...props}
+  >
+    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+    <polyline points="21 15 16 10 5 21"></polyline>
+  </svg>
+)
+
 const FilePreview = ({ previewUrl, onFileChange, fileInputRef }) => (
   <motion.div
     className="space-y-6"
@@ -18,7 +38,7 @@ const FilePreview = ({ previewUrl, onFileChange, fileInputRef }) => (
       >
         {previewUrl ? (
           <motion.img
-            src={previewUrl || "/placeholder.svg"}
+            src={previewUrl || "/placeholder.svg?height=400&width=400"}
             alt="Preview"
             className="w-full h-full object-cover"
             initial={{ opacity: 0 }}
@@ -33,23 +53,14 @@ const FilePreview = ({ previewUrl, onFileChange, fileInputRef }) => (
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
           >
-            <motion.svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-12 w-12 text-emerald-400 mx-auto mb-2"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+            <motion.div
+              className="mx-auto mb-2"
               initial={{ y: -10, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.3, duration: 0.5 }}
             >
-              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-              <circle cx="8.5" cy="8.5" r="1.5"></circle>
-              <polyline points="21 15 16 10 5 21"></polyline>
-            </motion.svg>
+              <ImageIcon className="h-12 w-12 text-emerald-400" />
+            </motion.div>
             <motion.span
               className="text-emerald-600 text-sm block"
               initial={{ y: 10, opacity: 0 }}
@@ -93,22 +104,26 @@ const FilePreview = ({ previewUrl, onFileChange, fileInputRef }) => (
           whileHover={{ scale: 1.02, backgroundColor: "rgb(236, 253, 245)" }}
           whileTap={{ scale: 0.98 }}
         >
-          <motion.svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5 mr-2 text-emerald-600"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+          <motion.div
             animate={{ y: [0, -3, 0] }}
             transition={{ repeat: Number.POSITIVE_INFINITY, repeatType: "reverse", duration: 1.5 }}
+            className="mr-2"
           >
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="17 8 12 3 7 8"></polyline>
-            <line x1="12" y1="3" x2="12" y2="15"></line>
-          </motion.svg>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5 text-emerald-600"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+          </motion.div>
           {previewUrl ? "Change Image" : "Select Image"}
         </motion.label>
       </div>
@@ -127,4 +142,3 @@ const FilePreview = ({ previewUrl, onFileChange, fileInputRef }) => (
 )
 
 export default FilePreview
-
